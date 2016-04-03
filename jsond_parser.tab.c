@@ -1880,6 +1880,10 @@ int php_json_parser_ht_update(php_json_parser *parser, HashTable *ht, zval *zkey
 	ZVAL_ZVAL(data, zvalue, 0, 0);
 	
 	if (parser->scanner.options & PHP_JSON_OBJECT_AS_ARRAY) {
+		if ((parser->scanner.options & PHP_JSON_DUPKEYS_AS_ERROR) && (zend_symtable_exists(ht, key, key_len))) {
+			parser->scanner.errcode = PHP_JSON_ERROR_DUPKEY;
+			goto parse_failure;
+		}
 		zend_symtable_update(ht, key, key_len, &data, sizeof(zval *), NULL);
 	} else {
 		if (key_len == 1) {
@@ -1887,12 +1891,17 @@ int php_json_parser_ht_update(php_json_parser *parser, HashTable *ht, zval *zkey
 			key_len = sizeof("_empty_");
 		} else if (key[0] == '\0') {
 			parser->scanner.errcode = PHP_JSON_ERROR_INVALID_PROPERTY_NAME;
-			zval_dtor(zkey);
-			zval_dtor(data);
-			efree(data);
-			zend_hash_destroy(ht);
-			FREE_HASHTABLE(ht);
-			return FAILURE;
+			parse_failure:
+				zval_dtor(zkey);
+				zval_dtor(data);
+				efree(data);
+				zend_hash_destroy(ht);
+				FREE_HASHTABLE(ht);
+				return FAILURE;
+		}
+		if ((parser->scanner.options & PHP_JSON_DUPKEYS_AS_ERROR) && (zend_symtable_exists(ht, key, key_len))) {
+			parser->scanner.errcode = PHP_JSON_ERROR_DUPKEY;
+			goto parse_failure;
 		}
 		zend_hash_update(ht, key, key_len, &data, sizeof(zval *), NULL);
 	}
