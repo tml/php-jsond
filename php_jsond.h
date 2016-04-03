@@ -116,7 +116,8 @@ typedef enum {
     PHP_JSON_ERROR_INF_OR_NAN,
     PHP_JSON_ERROR_UNSUPPORTED_TYPE,
 	PHP_JSON_ERROR_INVALID_PROPERTY_NAME,
-	PHP_JSON_ERROR_UTF16
+	PHP_JSON_ERROR_UTF16,
+	PHP_JSON_ERROR_DUPKEY
 } php_json_error_code;
 
 /* json_encode() options */
@@ -139,6 +140,7 @@ typedef enum {
 /* json_decode() options */
 #define PHP_JSON_OBJECT_AS_ARRAY	(1<<0)
 #define PHP_JSON_BIGINT_AS_STRING	(1<<1)
+#define PHP_JSON_DUPKEYS_AS_ERROR	(1<<2)
 
 /* default depth */
 #define PHP_JSON_PARSER_DEFAULT_DEPTH 512
