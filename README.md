@@ -64,8 +64,9 @@ JSOND_ERROR_RECURSION (integer)
 JSOND_ERROR_INF_OR_NAN (integer)
 JSOND_ERROR_UNSUPPORTED_TYPE (integer
 JSOND_ERROR_UTF16 (integer)
+JSOND_ERROR_DUPKEY (integer)
 ```
-The error codes are the same as json errors except `JSOND_ERROR_UTF16` that is new. This error is raised if escaped unicode is an invalid surrogate pair (lead surrogate is not fallowed by trail surrogate).
+The error codes are the same as json errors except `JSOND_ERROR_UTF16` and `JSOND_ERROR_DUPKEY`, which are new. A `JSOND_ERROR_UTF16` error is raised if escaped unicode is an invalid surrogate pair (lead surrogate is not fallowed by trail surrogate). A `JSOND_ERROR_DUPKEY` is raised if the `option` flag to `json_decode()` has the  `JSOND_DUPKEYS_AS_ERROR` bit set, and duplicate keys are found during decoding.
 
 ```
 JSOND_HEX_TAG (integer)
@@ -75,6 +76,7 @@ JSOND_HEX_QUOT (integer)
 JSOND_FORCE_OBJECT (integer)
 JSOND_NUMERIC_CHECK (integer)
 JSOND_BIGINT_AS_STRING (integer)
+JSOND_DUPKEYS_AS_ERROR (integer)
 JSOND_PRETTY_PRINT (integer)
 JSOND_UNESCAPED_SLASHES (integer)
 JSOND_UNESCAPED_UNICODE (integer)
@@ -106,7 +108,7 @@ JsondSerializable {
 
 ### Drop-in alternative for the standard JSON extension
 
-If PHP is compiled without json extension (`--without-json`) and jsond is compiled with defined macro `PHP_JSOND_PRIMARY` (non-default), the API is exactly the same as the API documented in [JSON documentation](http://php.net/json). There is just one small difference that a new error constant is defined - `JSON_ERROR_UTF16` that is described above.
+If PHP is compiled without json extension (`--without-json`) and jsond is compiled with defined macro `PHP_JSOND_PRIMARY` (non-default), the API is exactly the same as the API documented in [JSON documentation](http://php.net/json). There are just a few small differences that a few new constants are defined - `JSON_ERROR_UTF16`, `JSON_ERROR_DUPKEY`, and `JSOND_DUPKEYS_AS_ERROR` (described above).
 
 
 ## Benchmarks
